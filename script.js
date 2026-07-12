@@ -770,7 +770,9 @@
       }
       else if (action === "copy") { e.preventDefault(); copyToClipboard(t.getAttribute("data-value"), "Number"); }
       else if (action === "copy-map") { copyToClipboard(t.getAttribute("data-value"), "Map link"); }
-      else if (action === "print-sabha") { window.print(); }
+      else if (action === "print-sabha") {
+    alert("Printing is disabled.\n\nPlease contact the System Administrator.");
+}
       else if (action === "toggle-day") { t.closest(".day-accordion-item").classList.toggle("open"); }
       else if (action === "balak-prev") { STATE.balakPage = Math.max(1, STATE.balakPage - 1); renderBalakList(); scrollToBalakTop(); }
       else if (action === "balak-next") { STATE.balakPage += 1; renderBalakList(); scrollToBalakTop(); }
@@ -811,4 +813,21 @@
   }
 
   document.addEventListener("DOMContentLoaded", init);
+
+   // ---- Copy / selection restriction (best-effort deterrent, not foolproof) ----
+  document.addEventListener('copy', function(e){ e.preventDefault(); });
+  document.addEventListener('cut', function(e){ e.preventDefault(); });
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  document.addEventListener('selectstart', function(e){
+    if (e.target.tagName !== 'A') e.preventDefault();
+  });
+  document.addEventListener('dragstart', function(e){ e.preventDefault(); });
+  document.addEventListener('keydown', function(e){
+    var k = e.key ? e.key.toLowerCase() : '';
+    if ((e.ctrlKey || e.metaKey) && ['c','x','a','s','p','u'].indexOf(k) !== -1) {
+      e.preventDefault();
+    }
+    if (e.key === 'F12') e.preventDefault();
+      });
+
 })();
