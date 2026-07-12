@@ -194,8 +194,8 @@
   /* HOME                                                           */
   /* ------------------------------------------------------------ */
   function renderHome() {
-    $("#homeTotalSabha").textContent = DATA.sabha.length;
-    $("#homeTotalKaryakar").textContent = DATA.karyakar.length;
+    $("#homeTotalSabha").textContent = DATA.sabha.filter(function (s) { return s.is_active; }).length;
+    $("#homeTotalKaryakar").textContent = DATA.karyakar.filter(function (s) { return s.is_active; }).length;
     $("#homeTotalBalak").textContent = DATA.balak.length;
     $("#homeActiveSabha").textContent = DATA.sabha.filter(function (s) { return s.is_active; }).length;
   }
@@ -205,10 +205,10 @@
   /* ------------------------------------------------------------ */
   let charts = {};
   function renderSummary() {
-    const totalSabha = DATA.sabha.length;
+    const totalSabha = DATA.sabha.filter(function (s) { return s.is_active; }).length;
     const activeSabha = DATA.sabha.filter(function (s) { return s.is_active; }).length;
     const inactiveSabha = totalSabha - activeSabha;
-    const totalKaryakar = DATA.karyakar.length;
+    const totalKaryakar = DATA.karyakar.filter(function (s) { return s.is_active; }).length;
     const activeKaryakar = DATA.karyakar.filter(function (k) { return k.is_active; }).length;
     const totalBalak = DATA.balak.length;
     const registeredBalak = DATA.balak.filter(function (b) { return b.registered; }).length;
@@ -279,8 +279,8 @@
   /* ------------------------------------------------------------ */
   function populateSabhaFilters() {
     fillSelect("#sabhaFilterDay", DATA.master.Day || uniq(DATA.sabha, "day"));
-    fillSelect("#sabhaFilterArea", uniq(DATA.sabha, "area"));
-    fillSelect("#sabhaFilterKshetra", DATA.master.Kshetra || uniq(DATA.sabha, "kshetra"));
+     fillSelect("#sabhaFilterArea", uniq(DATA.sabha, "area")); 
+     fillSelect("#sabhaFilterKshetra", DATA.master.Kshetra || uniq(DATA.sabha, "kshetra"));  
     fillSelect("#sabhaFilterType", DATA.master.SabhaType || uniq(DATA.sabha, "sabha_type"));
   }
   function uniq(list, key) {
