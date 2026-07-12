@@ -2,2414 +2,266 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Malad East Kshetra 3 Bal Mandal Sabha Directory</title>
-<style>
-  :root{
-    --purple:#6a2c91;
-    --purple-dark:#4a1d68;
-    --purple-light:#9b3fb0;
-    --orange:#e0762f;
-    --green:#2f8f6e;
-    --bg:#f7f5fa;
-    --card-border:#e2d5ea;
-    --text:#2b2b2b;
-    --muted:#8a7391;
-  }
-  *{box-sizing:border-box;}
-  html,body{
-    margin:0;padding:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
-    -webkit-touch-callout:none;
-  }
-  a{-webkit-user-select:auto;} /* keep links tappable, selection still blocked via JS */
-  img{-webkit-user-drag:none; user-drag:none;}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malad East Bal Mandal — Sabha Information Management System</title>
+<meta name="description" content="Sabha, Karyakar and Balak directory management system for Malad East Bal Mandal.">
 
-  /* ---------- TOP BAR / NAV ---------- */
-  .topbar{
-    position:sticky; top:0; z-index:50;
-    background:linear-gradient(90deg,var(--purple),var(--purple-light));
-    color:#fff;
-    padding:10px 16px;
-    display:flex; align-items:center; justify-content:space-between;
-    box-shadow:0 2px 8px rgba(0,0,0,0.12);
-    flex-wrap:wrap;
-    gap:8px;
-  }
-  .topbar .brand{
-    font-weight:700; font-size:14px; letter-spacing:0.3px;
-  }
-  .topbar .brand small{
-    display:block; font-weight:400; font-size:10px; opacity:0.85; letter-spacing:1px; text-transform:uppercase;
-  }
-  .day-nav{
-    display:flex; gap:6px; overflow-x:auto; flex:1; justify-content:flex-end;
-    -ms-overflow-style:none; scrollbar-width:none;
-  }
-  .day-nav::-webkit-scrollbar{display:none;}
-  .day-nav a{
-    color:#fff; text-decoration:none; font-size:11.5px; font-weight:600;
-    background:rgba(255,255,255,0.16);
-    padding:6px 12px; border-radius:20px; white-space:nowrap;
-    border:1px solid rgba(255,255,255,0.3);
-  }
-  .day-nav a:active{ background:rgba(255,255,255,0.32); }
-
-  /* ---------- SUMMARY / COVER ---------- */
-  .summary{
-    background:linear-gradient(160deg,#6a2c91 0%, #9b3fb0 45%, #e0762f 100%);
-    color:#fff;
-    padding:36px 20px 30px 20px;
-    text-align:center;
-  }
-  .summary .badge{
-    width:64px;height:64px;border-radius:50%;
-    background:rgba(255,255,255,0.15);
-    border:2px solid rgba(255,255,255,0.6);
-    display:flex;align-items:center;justify-content:center;
-    font-size:28px;margin:0 auto 16px auto;
-  }
-  .summary h1{
-    font-size:24px; margin:0 0 4px 0; font-weight:700; line-height:1.3;
-  }
-  .summary p.subtitle{
-    margin:0 0 22px 0; font-size:11px; letter-spacing:2px; text-transform:uppercase; opacity:0.9;
-  }
-  .summary .stats{
-    display:flex; justify-content:center; gap:12px; flex-wrap:wrap;
-  }
-  .summary .stat-box{
-    background:rgba(255,255,255,0.14);
-    border:1px solid rgba(255,255,255,0.35);
-    border-radius:12px;
-    padding:14px 22px;
-    min-width:88px;
-  }
-  .summary .stat-box .num{font-size:24px;font-weight:700;display:block;}
-  .summary .stat-box .lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.2px;opacity:0.9;}
-  .summary .gen-date{margin-top:20px;font-size:10.5px;opacity:0.85;}
-
-  /* ---------- TOC (below summary) ---------- */
-  .toc-section{
-    max-width:900px; margin:0 auto; padding:22px 16px 6px 16px;
-  }
-  .toc-section h2{
-    font-size:16px; color:var(--purple); margin:0 0 12px 0;
-    border-bottom:3px solid var(--orange); padding-bottom:8px;
-  }
-  .toc-grid{
-    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;
-  }
-  .toc-grid a{
-    display:flex; justify-content:space-between; align-items:center;
-    text-decoration:none; color:var(--text);
-    background:#fff; border-left:5px solid var(--purple-light);
-    border-radius:8px; padding:13px 16px;
-    font-size:13.5px; font-weight:600;
-    box-shadow:0 1px 3px rgba(0,0,0,0.05);
-  }
-  .toc-grid a .count{
-    font-size:10.5px; font-weight:500; color:var(--purple-light);
-    background:#f3e9f7; padding:3px 9px; border-radius:12px;
-  }
-
-  /* ---------- DAY SECTIONS ---------- */
-  .day-section{
-    max-width:900px; margin:0 auto; padding:18px 16px 4px 16px;
-    scroll-margin-top:64px;
-  }
-  .day-title{
-    font-size:20px; font-weight:700; color:#fff;
-    background:linear-gradient(90deg,var(--purple),var(--purple-light));
-    padding:12px 18px; border-radius:10px; margin:0 0 16px 0;
-    scroll-margin-top:64px;
-  }
-  .day-title .subtitle{
-    display:block; font-size:10.5px; font-weight:400; opacity:0.9; margin-top:3px; letter-spacing:0.4px;
-  }
-
-  /* ---------- SABHA CARD ---------- */
-  .sabha-card{
-    background:#fff;
-    border:1px solid var(--card-border);
-    border-radius:12px;
-    margin-bottom:16px;
-    overflow:hidden;
-    box-shadow:0 1px 4px rgba(0,0,0,0.06);
-  }
-  .sabha-header{
-    background:#f7f2fa;
-    padding:12px 16px;
-    border-bottom:2px solid var(--orange);
-    display:flex; justify-content:space-between; align-items:flex-start;
-    flex-wrap:wrap; gap:8px;
-  }
-  .sabha-header .name{font-size:15.5px;font-weight:700;color:var(--purple);}
-  .tag-group{display:flex;gap:6px;flex-wrap:wrap;}
-  .id-tag{
-    font-size:9.5px; color:#fff; padding:3px 9px; border-radius:10px; font-weight:600; white-space:nowrap;
-    background:var(--orange);
-  }
-  .id-tag.alt{background:var(--purple);}
-  .id-tag.alt2{background:var(--green);}
-
-  .sabha-body{padding:14px 16px; display:flex; flex-wrap:wrap;}
-  .info-item{width:50%; padding:5px 8px 5px 0; font-size:12px;}
-  .info-item.full{width:100%;}
-  .info-item .label{
-    color:var(--muted); font-size:9px; text-transform:uppercase; letter-spacing:0.5px;
-    display:block; margin-bottom:2px;
-  }
-  .info-item .value{font-weight:500; word-break:break-word;}
-  .info-item a{color:var(--purple-light); text-decoration:none; font-weight:600;}
-  .info-item a:active{opacity:0.7;}
-
-  .karyakar-section{padding:0 16px 16px 16px;}
-  .karyakar-section h4{
-    font-size:11.5px; color:var(--purple); text-transform:uppercase; letter-spacing:0.5px;
-    margin:6px 0 10px 0; border-top:1px dashed var(--card-border); padding-top:12px;
-  }
-  .no-karyakars{
-    font-size:11.5px; color:#b04a4a; font-weight:600; font-style:italic; padding:4px 0 2px 0;
-  }
-
-  table.kary-table{width:100%; border-collapse:collapse; font-size:12px;}
-  table.kary-table th{
-    background:var(--purple); color:#fff; text-align:left; padding:8px 10px;
-    font-size:10px; text-transform:uppercase; letter-spacing:0.3px;
-  }
-  table.kary-table td{padding:8px 10px; border-bottom:1px solid #efe6f3; vertical-align:top;}
-  table.kary-table tr:nth-child(even) td{background:#faf7fb;}
-  table.kary-table a{color:var(--purple-light); text-decoration:none; font-weight:600;}
-  .role-pill{
-    background:#eadcf0; color:var(--purple); padding:2px 9px; border-radius:10px;
-    font-size:10px; font-weight:600; white-space:nowrap;
-  }
-
-  /* ---------- RESPONSIVE TABLE -> CARD LIST on small screens ---------- */
-  @media (max-width:640px){
-    .info-item{width:100%;}
-    table.kary-table thead{display:none;}
-    table.kary-table, table.kary-table tbody, table.kary-table tr, table.kary-table td{display:block; width:100%;}
-    table.kary-table tr{
-      border:1px solid var(--card-border); border-radius:8px; margin-bottom:10px; padding:6px 0; background:#fff;
-    }
-    table.kary-table td{
-      border-bottom:none; padding:5px 12px; display:flex; justify-content:space-between; align-items:center; gap:10px;
-    }
-    table.kary-table td::before{
-      content:attr(data-label); font-size:9.5px; text-transform:uppercase; letter-spacing:0.4px;
-      color:var(--muted); font-weight:700; flex-shrink:0;
-    }
-    table.kary-table tr:nth-child(even) td{background:transparent;}
-    .summary h1{font-size:19px;}
-    .day-nav a{font-size:10.5px;padding:5px 10px;}
-  }
-
-  .footer-bar{
-    max-width:900px;margin:24px auto 40px auto;padding:0 16px;
-    text-align:center;font-size:10.5px;color:var(--muted);
-  }
-  .back-to-top{
-    display:inline-block;margin-top:10px;color:var(--purple-light);
-    text-decoration:none;font-weight:600;font-size:11.5px;
-  }
-
-  /* Copy-protection notice badge */
-  .protect-badge{
-    max-width:900px;margin:14px auto 0 auto;padding:0 16px;
-  }
-  .protect-badge span{
-    display:inline-flex;align-items:center;gap:6px;
-    font-size:10px;color:var(--muted);background:#efe6f3;
-    padding:5px 10px;border-radius:8px;
-  }
-</style>
+<!-- Bootstrap 5 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet">
+<!-- App styles -->
+<link href="style.css" rel="stylesheet">
 </head>
 <body oncontextmenu="return false;">
 
-  <div class="topbar" id="top">
-    <div class="brand">Malad East Kshetra 3<small>Bal Mandal Sabha Directory</small></div>
-    <div class="day-nav">
-      
-      <a href="#day-monday">Monday</a>
-      
-      <a href="#day-wednesday">Wednesday</a>
-      
-      <a href="#day-thursday">Thursday</a>
-      
-      <a href="#day-friday">Friday</a>
-      
-      <a href="#day-saturday">Saturday</a>
-      
+<!-- ================= LOADING OVERLAY ================= -->
+<div id="loadingOverlay" style="position:fixed;inset:0;background:#f7f5fa;z-index:2000;display:flex;align-items:center;justify-content:center;">
+  <div class="loading-spinner-wrap">
+    <div class="spinner-ring"></div>
+    <p style="margin-top:14px;font-weight:600;color:#6a2c91;">Loading Bal Mandal data&hellip;</p>
+  </div>
+</div>
+
+<!-- ================= TOP BAR ================= -->
+<header class="app-topbar">
+  <button class="burger" id="burgerBtn" aria-label="Toggle menu">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+  <a href="#" class="brand" data-goto="home" style="text-decoration:none;color:#fff;">
+    <span class="logo-badge">🏯</span>
+    <span>
+      <span class="title">Malad East Bal Mandal</span>
+      <small>Sabha Information Management</small>
+    </span>
+  </a>
+  <div class="global-search-wrap">
+    <span class="material-symbols-outlined">search</span>
+    <input type="text" id="globalSearchInput" placeholder="Search Sabha, Karyakar or Balak...">
+    <div class="global-search-results" id="globalSearchResults"></div>
+  </div>
+  <div class="topbar-actions">
+    <button id="themeToggleBtn" aria-label="Toggle dark mode"><span class="material-symbols-outlined">dark_mode</span></button>
+  </div>
+</header>
+
+<!-- ================= SIDEBAR ================= -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<nav class="app-sidebar" id="appSidebar">
+  <div class="sidebar-section-label">Menu</div>
+  <a class="sidebar-link" data-goto="home"><span class="material-symbols-outlined">home</span>Home</a>
+  <a class="sidebar-link" data-goto="summary"><span class="material-symbols-outlined">bar_chart</span>Summary</a>
+
+  <div class="sidebar-section-label">Directories</div>
+  <a class="sidebar-link" data-goto="sabha"><span class="material-symbols-outlined">temple_hindu</span>Sabha Directory</a>
+  <a class="sidebar-link" data-goto="karyakar"><span class="material-symbols-outlined">groups</span>Karyakar Directory</a>
+  <a class="sidebar-link" data-goto="balak"><span class="material-symbols-outlined">child_care</span>Balak Directory</a>
+
+  <div class="sidebar-section-label">More</div>
+  <a class="sidebar-link" data-goto="daywise"><span class="material-symbols-outlined">calendar_month</span>Day Wise</a>
+  <a class="sidebar-link" data-goto="contact"><span class="material-symbols-outlined">call</span>Contact</a>
+</nav>
+
+<!-- ================= MAIN ================= -->
+<main class="app-main">
+
+  <!-- ---------------- HOME ---------------- -->
+  <section class="page-section" id="sec-home">
+    <div class="hero-banner">
+      <div class="badge-circle">🏯</div>
+      <h1>Malad East Bal Mandal</h1>
+      <p class="subtitle">Sabha Information Management System</p>
+      <div class="hero-search">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" id="heroSearchInput" placeholder="Search a Sabha by name, area or day...">
+      </div>
+    </div>
+
+    <div class="dash-cards">
+      <div class="stat-card"><span class="material-symbols-outlined">temple_hindu</span><span class="counter" id="homeTotalSabha">0</span><span class="lbl">Total Sabha</span></div>
+      <div class="stat-card"><span class="material-symbols-outlined">groups</span><span class="counter" id="homeTotalKaryakar">0</span><span class="lbl">Total Karyakar</span></div>
+      <div class="stat-card"><span class="material-symbols-outlined">child_care</span><span class="counter" id="homeTotalBalak">0</span><span class="lbl">Total Balak</span></div>
+      <div class="stat-card"><span class="material-symbols-outlined">verified</span><span class="counter" id="homeActiveSabha">0</span><span class="lbl">Active Sabha</span></div>
+    </div>
+
+    <div class="quicklinks">
+      <h3>Quick Links</h3>
+      <div class="quicklink-grid">
+        <a class="quicklink-card" data-goto="sabha"><span class="material-symbols-outlined">temple_hindu</span><div><strong>Sabha Directory</strong><span class="desc">Browse all Sabha with address &amp; contact details</span></div></a>
+        <a class="quicklink-card" data-goto="karyakar"><span class="material-symbols-outlined">groups</span><div><strong>Karyakar Directory</strong><span class="desc">Find and contact Karyakars instantly</span></div></a>
+        <a class="quicklink-card" data-goto="balak"><span class="material-symbols-outlined">child_care</span><div><strong>Balak Directory</strong><span class="desc">Search Balak records by Sabha or standard</span></div></a>
+        <a class="quicklink-card" data-goto="daywise"><span class="material-symbols-outlined">calendar_month</span><div><strong>Day Wise Schedule</strong><span class="desc">See which Sabha run on each day of the week</span></div></a>
+        <a class="quicklink-card" data-goto="summary"><span class="material-symbols-outlined">bar_chart</span><div><strong>Summary Dashboard</strong><span class="desc">Charts &amp; overall statistics</span></div></a>
+        <a class="quicklink-card" data-goto="contact"><span class="material-symbols-outlined">call</span><div><strong>Contact</strong><span class="desc">Reach the Bal Mandal core team</span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- SUMMARY ---------------- -->
+  <section class="page-section" id="sec-summary">
+    <div class="section-heading"><h2><span class="material-symbols-outlined">bar_chart</span>Summary Dashboard</h2></div>
+    <div class="container-narrow">
+      <div class="summary-grid">
+        <div class="stat-card"><span class="counter" id="sumTotalSabha">0</span><span class="lbl">Total Sabha</span></div>
+        <div class="stat-card"><span class="counter" id="sumActiveSabha">0</span><span class="lbl">Active Sabha</span></div>
+        <div class="stat-card"><span class="counter" id="sumInactiveSabha">0</span><span class="lbl">Inactive Sabha</span></div>
+        <div class="stat-card"><span class="counter" id="sumTotalKaryakar">0</span><span class="lbl">Total Karyakar</span></div>
+        <div class="stat-card"><span class="counter" id="sumActiveKaryakar">0</span><span class="lbl">Active Karyakar</span></div>
+        <div class="stat-card"><span class="counter" id="sumTotalBalak">0</span><span class="lbl">Total Balak</span></div>
+        <div class="stat-card"><span class="counter" id="sumRegisteredBalak">0</span><span class="lbl">Registered Balak</span></div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-card"><h4>Sabha Type Count</h4><div class="chart-wrap"><canvas id="chartSabhaType"></canvas></div></div>
+        <div class="chart-card"><h4>Kshetra Wise Count</h4><div class="chart-wrap"><canvas id="chartKshetra"></canvas></div></div>
+      </div>
+      <div class="chart-card"><h4>Day Wise Sabha Count</h4><div class="chart-wrap"><canvas id="chartDayWise"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- ---------------- SABHA ---------------- -->
+  <section class="page-section" id="sec-sabha">
+    <div class="section-heading">
+      <div><h2><span class="material-symbols-outlined">temple_hindu</span>Sabha Directory</h2><p class="sub">Browse, search and filter all registered Sabha</p></div>
+    </div>
+    <div class="container-narrow">
+      <div class="filter-bar">
+        <div class="search-input"><span class="material-symbols-outlined">search</span><input type="text" id="sabhaSearch" placeholder="Search by name, area, address..."></div>
+        <select id="sabhaFilterDay"><option value="">All Days</option></select>
+        <select id="sabhaFilterArea"><option value="">All Areas</option></select>
+        <select id="sabhaFilterKshetra"><option value="">All Kshetra</option></select>
+        <select id="sabhaFilterType"><option value="">All Types</option></select>
+        <select id="sabhaSort">
+          <option value="">Sort: Default</option>
+          <option value="name">Sort by Name</option>
+          <option value="day">Sort by Day</option>
+          <option value="area">Sort by Area</option>
+        </select>
+        <button class="clear-btn" id="sabhaClearBtn"><span class="material-symbols-outlined" style="font-size:16px;">close</span>Clear</button>
+        <span class="result-count" id="sabhaResultCount"></span>
+      </div>
+      <div class="cards-grid" id="sabhaGrid"></div>
+    </div>
+  </section>
+
+  <!-- ---------------- KARYAKAR ---------------- -->
+  <section class="page-section" id="sec-karyakar">
+    <div class="section-heading">
+      <div><h2><span class="material-symbols-outlined">groups</span>Karyakar Directory</h2><p class="sub">Search and contact Karyakars</p></div>
+    </div>
+    <div class="container-narrow">
+      <div class="filter-bar">
+        <div class="search-input"><span class="material-symbols-outlined">search</span><input type="text" id="karyakarSearch" placeholder="Search by name, contact, company..."></div>
+        <select id="karyakarFilterArea"><option value="">All Areas</option></select>
+        <select id="karyakarFilterActive">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+        <button class="clear-btn" id="karyakarClearBtn"><span class="material-symbols-outlined" style="font-size:16px;">close</span>Clear</button>
+        <span class="result-count" id="karyakarResultCount"></span>
+      </div>
+      <div class="cards-grid" id="karyakarGrid"></div>
+    </div>
+  </section>
+
+  <!-- ---------------- BALAK ---------------- -->
+  <section class="page-section" id="sec-balak">
+    <div class="section-heading">
+      <div><h2><span class="material-symbols-outlined">child_care</span>Balak Directory</h2><p class="sub">Search Balak records — tap the phone or WhatsApp icon to reach a parent instantly</p></div>
+    </div>
+    <div class="container-narrow">
+      <div class="filter-bar">
+        <div class="search-input"><span class="material-symbols-outlined">search</span><input type="text" id="balakSearch" placeholder="Search by name, father's name, school..."></div>
+        <select id="balakFilterSabha"><option value="">All Sabha</option></select>
+        <select id="balakFilterStd"><option value="">All Standards</option></select>
+        <select id="balakFilterRegistered">
+          <option value="">All</option>
+          <option value="yes">Registered</option>
+          <option value="no">Not Registered</option>
+        </select>
+        <button class="clear-btn" id="balakClearBtn"><span class="material-symbols-outlined" style="font-size:16px;">close</span>Clear</button>
+        <span class="result-count" id="balakResultCount"></span>
+      </div>
+      <div class="cards-grid" id="balakGrid"></div>
+      <div class="pagination-bar" id="balakPaginationBar"></div>
+    </div>
+  </section>
+
+  <!-- ---------------- DAY WISE ---------------- -->
+  <section class="page-section" id="sec-daywise">
+    <div class="section-heading">
+      <div><h2><span class="material-symbols-outlined">calendar_month</span>Day Wise Schedule</h2><p class="sub">Sabha grouped by the day they meet</p></div>
+    </div>
+    <div class="container-narrow" id="dayWiseWrap"></div>
+  </section>
+
+  <!-- ---------------- CONTACT ---------------- -->
+  <section class="page-section" id="sec-contact">
+    <div class="section-heading"><h2><span class="material-symbols-outlined">call</span>Contact</h2></div>
+    <div class="container-narrow">
+      <div class="contact-card">
+        <span class="material-symbols-outlined">temple_hindu</span>
+        <h3 style="color:var(--purple);margin:10px 0 4px 0;">Malad East Bal Mandal</h3>
+        <p style="color:var(--muted);font-size:13px;">Sabha Information Management System</p>
+        <p style="font-size:13px;">
+          <a href="mailto:balmandalmaladeast@gmail.com" style="color:var(--purple-light);font-weight:600;text-decoration:none;">
+            <span class="material-symbols-outlined" style="vertical-align:middle;font-size:16px;">mail</span> balmandalmaladeast@gmail.com
+          </a>
+        </p>
+        <p style="font-size:12px;color:var(--muted);">For Sabha, Karyakar or Balak record updates, please contact your local Sabha Karyakar directly via the directory pages.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="app-footer">
+  <div class="foot-grid">
+    <div>
+      <h5>Malad East Bal Mandal</h5>
+      <p style="font-size:12.5px;color:#d8bfe8;">Sabha Information Management System — helping Karyakars stay connected and organized.</p>
+    </div>
+    <div>
+      <h5>Quick Links</h5>
+      <a href="#" data-goto="sabha">Sabha Directory</a>
+      <a href="#" data-goto="karyakar">Karyakar Directory</a>
+      <a href="#" data-goto="balak">Balak Directory</a>
+      <a href="#" data-goto="daywise">Day Wise Schedule</a>
+    </div>
+    <div>
+      <h5>Contact</h5>
+      <a href="mailto:balmandalmaladeast@gmail.com">balmandalmaladeast@gmail.com</a>
     </div>
   </div>
+  <div class="foot-bottom">&copy; <span id="footYear"></span> Malad East Bal Mandal. All rights reserved.</div>
+</footer>
 
-  <div class="summary">
-    <div class="badge">&#128193;</div>
-    <h1>Malad East Kshetra 3<br>Bal Mandal Sabha Directory</h1>
-    <p class="subtitle">Day-wise Sabha &amp; Karyakar Directory</p>
-    <div class="stats">
-      <div class="stat-box"><span class="num">5</span><span class="lbl">Days</span></div>
-      <div class="stat-box"><span class="num">23</span><span class="lbl">Sabhas</span></div>
-      <div class="stat-box"><span class="num">39</span><span class="lbl">Karyakars</span></div>
+<!-- ================= DETAIL MODAL ================= -->
+<div class="detail-modal-backdrop" id="detailModal">
+  <div class="detail-modal-content">
+    <div class="dm-head">
+      <div><h3 id="dmTitle">Sabha Name</h3><div class="dm-sub" id="dmSub"></div></div>
+      <button id="dmCloseBtn"><span class="material-symbols-outlined">close</span></button>
     </div>
-    <div class="gen-date">Generated on 11 July 2026</div>
+    <div class="dm-body" id="dmBody"></div>
+    <div class="dm-actions" id="dmActions"></div>
   </div>
+</div>
 
-  <div class="protect-badge"><span>&#128274; Content is view-only &mdash; copying is disabled</span></div>
+<!-- ================= FLOATING BUTTONS ================= -->
+<button class="fab fab-top" id="fabTop" aria-label="Back to top"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+<a class="fab fab-wa" href="https://wa.me/919820512210" target="_blank" rel="noopener" aria-label="WhatsApp Bal Mandal"><span class="material-symbols-outlined">chat</span></a>
 
-  <div class="toc-section" id="contents">
-    <h2>Table of Contents</h2>
-    <div class="toc-grid">
-      
-      <a href="#day-monday">
-        <span>Monday</span>
-        <span class="count">1 Sabha</span>
-      </a>
-      
-      <a href="#day-wednesday">
-        <span>Wednesday</span>
-        <span class="count">7 Sabhas</span>
-      </a>
-      
-      <a href="#day-thursday">
-        <span>Thursday</span>
-        <span class="count">1 Sabha</span>
-      </a>
-      
-      <a href="#day-friday">
-        <span>Friday</span>
-        <span class="count">5 Sabhas</span>
-      </a>
-      
-      <a href="#day-saturday">
-        <span>Saturday</span>
-        <span class="count">9 Sabhas</span>
-      </a>
-      
-    </div>
-  </div>
+<!-- ================= TOASTS ================= -->
+<div class="toast-stack" id="toastStack"></div>
 
-  
-  <div class="day-section">
-    <div class="day-title" id="day-monday">
-      Monday
-      <span class="subtitle">1 Sabha scheduled</span>
-    </div>
-
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Pushpam Shishu</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 17</span>
-          <span class="id-tag alt">Reg No: BL-BM3-SM-002</span>
-          <span class="id-tag alt2">Shishu</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">101, Pushpam, Road No.1, Near Raj Nursing Home, Daftary Road, Malkani Estate, Pushpa Park, Malad East, Mumbai, Maharashtra 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Nileshbhai Jivrambhai Patel</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919870449949">+91 98704 49949</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/x6A17WugJQpKCpJK9" target="_blank" rel="noopener">https://maps.app.goo.gl/x6A17WugJQpKCpJK9</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Gopal Ranjitbhai Parmar (10517)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">1 Jan 2000</td>
-              <td data-label="Mobile"><a href="tel:+919892091828">+91 98920 91828</a></td>
-              <td data-label="Email"><a href="mailto:parmargirish055@gmail.com">parmargirish055@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Lalit Madhubhai bhutka (8411)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">12 Sep 1989</td>
-              <td data-label="Mobile"><a href="tel:+919029293646">+91 90292 93646</a></td>
-              <td data-label="Email"><a href="mailto:lalitbhutka@gmail.com">lalitbhutka@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Sonak Chelabhai Deriya (7051)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">13 Mar 2002</td>
-              <td data-label="Mobile"><a href="tel:+918104164631">+91 81041 64631</a></td>
-              <td data-label="Email"><a href="mailto:sonakderiya2002@gmail.com">sonakderiya2002@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-  </div>
-  
-  <div class="day-section">
-    <div class="day-title" id="day-wednesday">
-      Wednesday
-      <span class="subtitle">7 Sabhas scheduled</span>
-    </div>
-
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Adarsh Nagar</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 1</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-015</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">Room No 15, Chawl No 2, Adarsh Nagar, kurar village, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Lakhamshi Ravariya</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919820512210">+91 98205 12210</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/B7F7tPNZ4NGg7cPR6" target="_blank" rel="noopener">https://maps.app.goo.gl/B7F7tPNZ4NGg7cPR6</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Haresh Jivrajbhai Ladwa (14554)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">29 Jun 1987</td>
-              <td data-label="Mobile"><a href="tel:+919136050805">+91 91360 50805</a></td>
-              <td data-label="Email"><a href="mailto:hareshlaadva@gmail.com">hareshlaadva@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Kaushal Ranjitbhai Dangodara</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">Not Available</td>
-              <td data-label="Mobile"><a href="tel:+919137080640">+91 91370 80640</a></td>
-              <td data-label="Email"><a href="mailto:11@test.com">11@test.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Yash Pareshbhai Panchal (14557)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">27 Nov 2000</td>
-              <td data-label="Mobile"><a href="tel:+919004168049">+91 90041 68049</a></td>
-              <td data-label="Email"><a href="mailto:panchalyash089@gmail.com">panchalyash089@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Kurar</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 9</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-006</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">B/406, Saket Residency Building, Kokni Pada Road, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">8:00 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Himmatbhai Patel</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919867561145">+91 98675 61145</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/SF6EGrC8rAPpeyuC6" target="_blank" rel="noopener">https://maps.app.goo.gl/SF6EGrC8rAPpeyuC6</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Ketan Motibhai Patel (1445)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">30 Oct 1988</td>
-              <td data-label="Mobile"><a href="tel:+919987686415">+91 99876 86415</a></td>
-              <td data-label="Email"><a href="mailto:ktpatel3020@gmail.com">ktpatel3020@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Tushar Laljibhai Ladva (7038)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">7 Jul 1995</td>
-              <td data-label="Mobile"><a href="tel:+919867923235">+91 98679 23235</a></td>
-              <td data-label="Email"><a href="mailto:tusharladva@gmail.com">tusharladva@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Nalanda</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 12</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-004</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">5/401, Nalanda Building, Near. Highway, Malad East, mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Pasabhai kapdi</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919870039913">+91 98700 39913</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/Es21HG2vfD572fBA9" target="_blank" rel="noopener">https://maps.app.goo.gl/Es21HG2vfD572fBA9</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Dhaval Bhikhabhai Dangodara (14558)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">22 Jan 2001</td>
-              <td data-label="Mobile"><a href="tel:+919920962998">+91 99209 62998</a></td>
-              <td data-label="Email"><a href="mailto:dhavalrrr@gmail.com">dhavalrrr@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Preet Kantibhai Moga (16099)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">11 Feb 2004</td>
-              <td data-label="Mobile"><a href="tel:+919313377651">+91 93133 77651</a></td>
-              <td data-label="Email"><a href="mailto:preetmoga777@gmail.com">preetmoga777@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Vipul Valjebhai Ambani (695)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">31 May 1984</td>
-              <td data-label="Mobile"><a href="tel:+919867561105">+91 98675 61105</a></td>
-              <td data-label="Email"><a href="mailto:ambanivipul@gmail.com">ambanivipul@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Omkar - C2</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 15</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-005</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">C2-1705, Omcar SRA,, Kurar Villege, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Dharmesh Natvarbhai Jethwa</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919702070781">+91 97020 70781</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/ciSCRT4dByB5gHZB7" target="_blank" rel="noopener">https://maps.app.goo.gl/ciSCRT4dByB5gHZB7</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Dharmesh Natvarlal Jethwa (4434)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">1 Sep 1990</td>
-              <td data-label="Mobile"><a href="tel:+919702070781">+91 97020 70781</a></td>
-              <td data-label="Email"><a href="mailto:Djjdjethva@gmail.com">Djjdjethva@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Haresh Jivrajbhai Ladwa (14554)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">29 Jun 1987</td>
-              <td data-label="Mobile"><a href="tel:+919136050805">+91 91360 50805</a></td>
-              <td data-label="Email"><a href="mailto:hareshlaadva@gmail.com">hareshlaadva@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Vikesh Nalinbhai Patel (10527)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">14 Mar 1989</td>
-              <td data-label="Mobile"><a href="tel:+919987787190">+91 99877 87190</a></td>
-              <td data-label="Email"><a href="mailto:vikeshpatel45@gmail.com">vikeshpatel45@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Shankar Bhuvan</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 19</span>
-          <span class="id-tag alt">Reg No: BL-BM3-SM-001</span>
-          <span class="id-tag alt2">Shishu</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">505, Shree sidhivinayak bldg off laxminarayan Mandir kathiyawadi chowk, Rani Sati Rd, Malad East, Mumbai, Maharashtra 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Dipakbhai Sheth</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919004614254">+91 90046 14254</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/VkxcUSRvheh7rCHk8" target="_blank" rel="noopener">https://maps.app.goo.gl/VkxcUSRvheh7rCHk8</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Lalit Madhubhai bhutka (8411)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">12 Sep 1989</td>
-              <td data-label="Mobile"><a href="tel:+919029293646">+91 90292 93646</a></td>
-              <td data-label="Email"><a href="mailto:lalitbhutka@gmail.com">lalitbhutka@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Pranay Devchandbhai Darji</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">13 Sep 1996</td>
-              <td data-label="Mobile"><a href="tel:+919326603730">+91 93266 03730</a></td>
-              <td data-label="Email"><a href="mailto:pranaydarji729@gmail.com">pranaydarji729@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Vandan Prafulbhai Patel</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">3 Oct 2004</td>
-              <td data-label="Mobile"><a href="tel:+919137356073">+91 91373 56073</a></td>
-              <td data-label="Email"><a href="mailto:Vandan03patel@gmail.com">Vandan03patel@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Siddhivinayak</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 20</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-001</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">605, Shree sidhivinayak bldg off laxminarayan Mandir kathiyawadi chowk, Rani Sati Rd, Malad East, Mumbai, Maharashtra 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Praful Purshottambhai Patel</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919867561143">+91 98675 61143</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/VkxcUSRvheh7rCHk8" target="_blank" rel="noopener">https://maps.app.goo.gl/VkxcUSRvheh7rCHk8</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Vipul Valjebhai Ambani (695)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">31 May 1984</td>
-              <td data-label="Mobile"><a href="tel:+919867561105">+91 98675 61105</a></td>
-              <td data-label="Email"><a href="mailto:ambanivipul@gmail.com">ambanivipul@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Yogesh Kamrajbhai Kotadiya (1847)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">20 Nov 1990</td>
-              <td data-label="Mobile"><a href="tel:+919004382702">+91 90043 82702</a></td>
-              <td data-label="Email"><a href="mailto:Yogeshkotadiya1990@gmail.com">Yogeshkotadiya1990@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Velani</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 23</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-012</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">Room No 23, C Wing, 1st Floor, Velani Estate, Khot kuva Road, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">8:00 PM to 9:30 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Pankajbhai Jethwa</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919220394544">+91 92203 94544</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/ScSXGEci5fbsim8f7" target="_blank" rel="noopener">https://maps.app.goo.gl/ScSXGEci5fbsim8f7</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Pankaj Bhagwanbhai Jethwa (14561)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">22 Mar 1989</td>
-              <td data-label="Mobile"><a href="tel:+919220394544">+91 92203 94544</a></td>
-              <td data-label="Email"><a href="mailto:jethwapankaj2012@gmail.com">jethwapankaj2012@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Vikesh Nalinbhai Patel (10527)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">14 Mar 1989</td>
-              <td data-label="Mobile"><a href="tel:+919987787190">+91 99877 87190</a></td>
-              <td data-label="Email"><a href="mailto:vikeshpatel45@gmail.com">vikeshpatel45@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-  </div>
-  
-  <div class="day-section">
-    <div class="day-title" id="day-thursday">
-      Thursday
-      <span class="subtitle">1 Sabha scheduled</span>
-    </div>
-
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Malad Marvadi Mandal</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 11</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-026</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">BAPS Shri Swaminarayan Mandir, Datta Mandir Rd, next to Sharda high school, Malad East, Mumbai, Maharashtra 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">9:00 PM to 10:30 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">BAPS Malad Mandir</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+918652406670">+91 86524 06670</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/sjDcY7qzX2FcRd6L9" target="_blank" rel="noopener">https://maps.app.goo.gl/sjDcY7qzX2FcRd6L9</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Bharat Arjunkumar Mali</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">1 nan 1111</td>
-              <td data-label="Mobile"><a href="tel:+919079181430">+91 90791 81430</a></td>
-              <td data-label="Email"><a href="mailto:11@test.com">11@test.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Dipak Kamrajbhai Patel (696)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">27 Nov 1985</td>
-              <td data-label="Mobile"><a href="tel:+919987261818">+91 99872 61818</a></td>
-              <td data-label="Email"><a href="mailto:Deepakkotadiya@yahoo.co.in">Deepakkotadiya@yahoo.co.in</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Pritesh Pareshbhai Panchal (18398)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">13 May 2003</td>
-              <td data-label="Mobile"><a href="tel:+918652406670">+91 86524 06670</a></td>
-              <td data-label="Email"><a href="mailto:panchalpritesh193@gmail.com">panchalpritesh193@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-  </div>
-  
-  <div class="day-section">
-    <div class="day-title" id="day-friday">
-      Friday
-      <span class="subtitle">5 Sabhas scheduled</span>
-    </div>
-
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Ashmi Apartment</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 2</span>
-          <span class="id-tag alt">Reg No: BL-BM3-SM-003</span>
-          <span class="id-tag alt2">Shishu</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">A-302, Sukh Sagar, Bachani Nagar Road, Daftary Road, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Sonak Chelabhai Deriya</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+918104164631">+91 81041 64631</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/nBiCFYiyxwNSDBR87" target="_blank" rel="noopener">https://maps.app.goo.gl/nBiCFYiyxwNSDBR87</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Lalit Madhubhai bhutka (8411)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">12 Sep 1989</td>
-              <td data-label="Mobile"><a href="tel:+919029293646">+91 90292 93646</a></td>
-              <td data-label="Email"><a href="mailto:lalitbhutka@gmail.com">lalitbhutka@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Parth Dineshbhai Darji (4436)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">6 Jul 1995</td>
-              <td data-label="Mobile"><a href="tel:+917039305212">+91 70393 05212</a></td>
-              <td data-label="Email"><a href="mailto:parth.darji22@gmail.com">parth.darji22@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">KD - 3</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 7</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-017</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">1009, K.D. Heights Building No - 3, Opp. Laxmi Narayan Mandir, Rani Sati Road, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Vipul Ramanbhai Solanki</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+918850908648">+91 88509 08648</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/4PYSCUT8mjHUnswt7" target="_blank" rel="noopener">https://maps.app.goo.gl/4PYSCUT8mjHUnswt7</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Mukesh Yashvantbhai Darji (925)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">4 Jul 1984</td>
-              <td data-label="Mobile"><a href="tel:+919821298740">+91 98212 98740</a></td>
-              <td data-label="Email"><a href="mailto:mukdarji@gmail.com">mukdarji@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Tushar Prabhudas Yadav</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">19 Nov 2006</td>
-              <td data-label="Mobile"><a href="tel:+919867029110">+91 98670 29110</a></td>
-              <td data-label="Email"><a href="mailto:yadavtusharp@gmail.com">yadavtusharp@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Malad Hari Mandir</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 10</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-010</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">BAPS Shri Swaminarayan Mandir, Datta Mandir Rd, next to Sharda high school, Malad East, Mumbai, Maharashtra 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">BAPS Malad Mandir</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919987686415">+91 99876 86415</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/sjDcY7qzX2FcRd6L9" target="_blank" rel="noopener">https://maps.app.goo.gl/sjDcY7qzX2FcRd6L9</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Jay Satishbhai Shah</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">1 nan 1111</td>
-              <td data-label="Mobile"><a href="tel:+917021713899">+91 70217 13899</a></td>
-              <td data-label="Email"><a href="mailto:11@test.com">11@test.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Ketan Motibhai Patel (1445)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">30 Oct 1988</td>
-              <td data-label="Mobile"><a href="tel:+919987686415">+91 99876 86415</a></td>
-              <td data-label="Email"><a href="mailto:ktpatel3020@gmail.com">ktpatel3020@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Patel Chowk</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 16</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-016</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">1408, Vaishno Dadi SRA, Kathiyawadi Chowk, Rani Sati Marg, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Mehul Hiralal Bajariya</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+918591447697">+91 85914 47697</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/BBeZoxxQuV4DXyHz7" target="_blank" rel="noopener">https://maps.app.goo.gl/BBeZoxxQuV4DXyHz7</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Dipak Kamrajbhai Patel (696)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">27 Nov 1985</td>
-              <td data-label="Mobile"><a href="tel:+919987261818">+91 99872 61818</a></td>
-              <td data-label="Email"><a href="mailto:Deepakkotadiya@yahoo.co.in">Deepakkotadiya@yahoo.co.in</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Jayesh Ramanbhai Solanki (1200)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">13 Jul 1987</td>
-              <td data-label="Mobile"><a href="tel:+919594492199">+91 95944 92199</a></td>
-              <td data-label="Email"><a href="mailto:jrsolanki13@gmail.com">jrsolanki13@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Param Prabhudas Yadav</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">1 nan 1111</td>
-              <td data-label="Mobile"><a href="tel:+918451863126">+91 84518 63126</a></td>
-              <td data-label="Email"><a href="mailto:11@test.com">11@test.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Triveni Nagar</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 21</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-025</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">Room No 3, Shiv Shakti Colony, Laxman Nagar, Kurar Village, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">9:00 PM to 10:30 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Lundasji Vaishnav</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919967687895">+91 99676 87895</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/iHCXMRdjctzYsj738" target="_blank" rel="noopener">https://maps.app.goo.gl/iHCXMRdjctzYsj738</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Haresh Jivrajbhai Ladwa (14554)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">29 Jun 1987</td>
-              <td data-label="Mobile"><a href="tel:+919136050805">+91 91360 50805</a></td>
-              <td data-label="Email"><a href="mailto:hareshlaadva@gmail.com">hareshlaadva@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Veshal Arunbhai Gohil (14557)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">23 May 1993</td>
-              <td data-label="Mobile"><a href="tel:+919920089663">+91 99200 89663</a></td>
-              <td data-label="Email"><a href="mailto:veshalgohil@gmail.com">veshalgohil@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-  </div>
-  
-  <div class="day-section">
-    <div class="day-title" id="day-saturday">
-      Saturday
-      <span class="subtitle">9 Sabhas scheduled</span>
-    </div>
-
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Gitanjali</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 3</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-009</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">F 804, Sheetal Tapovan, Pathanwadi, W E Higway, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Mayur Pankajbhai Mistry</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+918879908712">+91 88799 08712</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/j74xfySZVgkxqwvf6" target="_blank" rel="noopener">https://maps.app.goo.gl/j74xfySZVgkxqwvf6</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Karan Bharatbhai Patel (5123)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">3 Oct 1996</td>
-              <td data-label="Mobile"><a href="tel:+917666126815">+91 76661 26815</a></td>
-              <td data-label="Email"><a href="mailto:karanpatel3kp@gmail.com">karanpatel3kp@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Vikesh Nalinbhai Patel (10527)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">14 Mar 1989</td>
-              <td data-label="Mobile"><a href="tel:+919987787190">+91 99877 87190</a></td>
-              <td data-label="Email"><a href="mailto:vikeshpatel45@gmail.com">vikeshpatel45@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Govind Nagar</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 4</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-024</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">C-705, Muktanghan apt., Raheja Township, Upper Govind Nagar, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:00 PM to 8:30 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Dipakbhai Goti</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919820845447">+91 98208 45447</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/ZzBofTDr3ighNzjF7" target="_blank" rel="noopener">https://maps.app.goo.gl/ZzBofTDr3ighNzjF7</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Gaurav Tulsibhai Bokha (10526)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">20 Jun 1992</td>
-              <td data-label="Mobile"><a href="tel:+919004022181">+91 90040 22181</a></td>
-              <td data-label="Email"><a href="mailto:gaurav20jun92@gmail.com">gaurav20jun92@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Sahaj Mukeshbhai Darji</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">1 nan 1111</td>
-              <td data-label="Mobile"><a href="tel:+918356020186">+91 83560 20186</a></td>
-              <td data-label="Email"><a href="mailto:11@test.com">11@test.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Kasm Baug</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 8</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-019</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">Room No-3,Aashabai Chawl No.9, Kasambag, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Kishorbhai Parmar</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919821289692">+91 98212 89692</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/CAag2nc2ntCcdJ2X9" target="_blank" rel="noopener">https://maps.app.goo.gl/CAag2nc2ntCcdJ2X9</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Parth Nileshbhai Mistry (18400)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">3 Jan 2005</td>
-              <td data-label="Mobile"><a href="tel:+919967319745">+91 99673 19745</a></td>
-              <td data-label="Email"><a href="mailto:mistryp801@gmail.com">mistryp801@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Vipul Valjebhai Ambani (695)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">31 May 1984</td>
-              <td data-label="Mobile"><a href="tel:+919867561105">+91 98675 61105</a></td>
-              <td data-label="Email"><a href="mailto:ambanivipul@gmail.com">ambanivipul@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">KD - 2</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 6</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-011</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">1203/1204,K.D. Heights Building No - 2, Opp. Laxmi Narayan Temple, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Vishal Vinubhai Patel</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919892933043">+91 98929 33043</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/fJYS55wxXbNAMDHw5" target="_blank" rel="noopener">https://maps.app.goo.gl/fJYS55wxXbNAMDHw5</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Mukesh Yashvantbhai Darji (925)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">4 Jul 1984</td>
-              <td data-label="Mobile"><a href="tel:+919821298740">+91 98212 98740</a></td>
-              <td data-label="Email"><a href="mailto:mukdarji@gmail.com">mukdarji@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Ronak Devbhai Gothi (10516)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">3 Aug 1995</td>
-              <td data-label="Mobile"><a href="tel:+919699228353">+91 96992 28353</a></td>
-              <td data-label="Email"><a href="mailto:ronakgothi77@gmail.com">ronakgothi77@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">KD - 5</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 24</span>
-          <span class="id-tag alt">Reg No: PR</span>
-          <span class="id-tag alt2">PR</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">714, K.D. Heights Building No - 5, Khot Dongri, Opp Laxmi Narayan Temple, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Savjibhai Shyamjibhai Yadav</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919892842398">+91 98928 42398</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/Z6y39ZA9Yo2ErWjbA" target="_blank" rel="noopener">https://maps.app.goo.gl/Z6y39ZA9Yo2ErWjbA</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Dipak Kamrajbhai Patel (696)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">27 Nov 1985</td>
-              <td data-label="Mobile"><a href="tel:+919987261818">+91 99872 61818</a></td>
-              <td data-label="Email"><a href="mailto:Deepakkotadiya@yahoo.co.in">Deepakkotadiya@yahoo.co.in</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Mukesh Yashvantbhai Darji (925)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">4 Jul 1984</td>
-              <td data-label="Mobile"><a href="tel:+919821298740">+91 98212 98740</a></td>
-              <td data-label="Email"><a href="mailto:mukdarji@gmail.com">mukdarji@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Vipulbhai Ramanbhai Solanki</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">12 Aug 1993</td>
-              <td data-label="Mobile"><a href="tel:+918850908648">+91 88509 08648</a></td>
-              <td data-label="Email"><a href="mailto:vs.12081100@gmail.com">vs.12081100@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Neelyog</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 13</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-003</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">B-1704,Neelyog Builiding, Dhanjiwadi, Malad East, mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Kantibhai Davabhai Antiya</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+918976605458">+91 89766 05458</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/745TUtE3QAjR7fV19" target="_blank" rel="noopener">https://maps.app.goo.gl/745TUtE3QAjR7fV19</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Ashish Chandrakantbhai Gediya (10515)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">19 Feb 2002</td>
-              <td data-label="Mobile"><a href="tel:+919167578731">+91 91675 78731</a></td>
-              <td data-label="Email"><a href="mailto:gediyaaashish@gmail.com">gediyaaashish@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Haresh Jivrajbhai Ladwa (14554)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">29 Jun 1987</td>
-              <td data-label="Mobile"><a href="tel:+919136050805">+91 91360 50805</a></td>
-              <td data-label="Email"><a href="mailto:hareshlaadva@gmail.com">hareshlaadva@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Omkar - C1</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 14</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-014</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">C1-1915, Omcar SRA, Kurar Villege, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Mitesh Ashokbhai Ladva</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919594889811">+91 95948 89811</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/QtXdeD11XLCF5mLR8" target="_blank" rel="noopener">https://maps.app.goo.gl/QtXdeD11XLCF5mLR8</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Haresh Jivrajbhai Ladwa (14554)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">29 Jun 1987</td>
-              <td data-label="Mobile"><a href="tel:+919136050805">+91 91360 50805</a></td>
-              <td data-label="Email"><a href="mailto:hareshlaadva@gmail.com">hareshlaadva@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Mitesh Ashokbhai Ladva (8412)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">15 Nov 1995</td>
-              <td data-label="Mobile"><a href="tel:+919594889811">+91 95948 89811</a></td>
-              <td data-label="Email"><a href="mailto:miteshladva@gmail.com">miteshladva@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Shah Housing-7</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 18</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-020</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">B-402, 4th Floor, Shah Arcade 1, Rani Sati Road, Opp SBI Bank, Malad East, Mumbai 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Ketan Rameshbhai Makwana</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919967202147">+91 99672 02147</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/voiDt3RnHxgi9D127" target="_blank" rel="noopener">https://maps.app.goo.gl/voiDt3RnHxgi9D127</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Daksh Kamleshbhai Waja</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">27 Jan 2004</td>
-              <td data-label="Mobile"><a href="tel:+918097305574">+91 80973 05574</a></td>
-              <td data-label="Email"><a href="mailto:dakshvajaicai@gmail.com">dakshvajaicai@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Dipak Kamrajbhai Patel (696)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">27 Nov 1985</td>
-              <td data-label="Mobile"><a href="tel:+919987261818">+91 99872 61818</a></td>
-              <td data-label="Email"><a href="mailto:Deepakkotadiya@yahoo.co.in">Deepakkotadiya@yahoo.co.in</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Kirtan Pareshbhai Chawda (14560)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">25 Nov 1999</td>
-              <td data-label="Mobile"><a href="tel:+918355840883">+91 83558 40883</a></td>
-              <td data-label="Email"><a href="mailto:kirtanchawda25111999@gmail.com">kirtanchawda25111999@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-    <div class="sabha-card">
-      <div class="sabha-header">
-        <span class="name">Vallabhyog</span>
-        <span class="tag-group">
-          <span class="id-tag">Sabha ID: 22</span>
-          <span class="id-tag alt">Reg No: BL-BM3-BM-008</span>
-          <span class="id-tag alt2">BSC</span>
-        </span>
-      </div>
-      <div class="sabha-body">
-        <div class="info-item">
-          <span class="label">Area</span>
-          <span class="value">Malad East</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Zone</span>
-          <span class="value">K-3</span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Address</span>
-          <span class="value">201, Jawahar Kunj, opposite Center Plaza, Daftary Road, Shivaji Chowk, Malad East, Mumbai, Maharashtra 400097</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Time</span>
-          <span class="value">7:30 PM to 9:00 PM</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Sabha Place Owner</span>
-          <span class="value">Vipulbhai Valjibhai Ambani</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Owner Contact Number</span>
-          <span class="value">
-            <a href="tel:+919867561105">+91 98675 61105</a>
-            
-          </span>
-        </div>
-        <div class="info-item full">
-          <span class="label">Google Map Link</span>
-          <span class="value">
-            <a href="https://maps.app.goo.gl/8Ush6T5y47Rn86Bf8" target="_blank" rel="noopener">https://maps.app.goo.gl/8Ush6T5y47Rn86Bf8</a>
-          </span>
-        </div>
-      </div>
-
-      <div class="karyakar-section">
-        <h4>Assigned Karyakars</h4>
-        
-        <table class="kary-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Mobile</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr>
-              <td data-label="Name">Sukrut Kaushikbhai Tank</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">1 nan 1111</td>
-              <td data-label="Mobile"><a href="tel:+918879883377">+91 88798 83377</a></td>
-              <td data-label="Email"><a href="mailto:11@test.com">11@test.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Vatsal Kishorbhai Waghela (0)</td>
-              <td data-label="Role"><span class="role-pill">Karyakar</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">17 Jan 2000</td>
-              <td data-label="Mobile"><a href="tel:+919619902401">+91 96199 02401</a></td>
-              <td data-label="Email"><a href="mailto:vatsal.waghela17@gmail.com">vatsal.waghela17@gmail.com</a></td>
-            </tr>
-            
-            <tr>
-              <td data-label="Name">Vipul Valjebhai Ambani (695)</td>
-              <td data-label="Role"><span class="role-pill">Nirikshak</span></td>
-              <td data-label="Gender">Male</td>
-              <td data-label="DOB">31 May 1984</td>
-              <td data-label="Mobile"><a href="tel:+919867561105">+91 98675 61105</a></td>
-              <td data-label="Email"><a href="mailto:ambanivipul@gmail.com">ambanivipul@gmail.com</a></td>
-            </tr>
-            
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-    
-  </div>
-  
-
-  <div class="footer-bar">
-    Balmandal Sabha Directory &middot; Generated on 11 July 2026
-    <br><a class="back-to-top" href="#top">&#8593; Back to top</a>
-  </div>
-
-<script>
-  // ---- Copy / selection restriction (best-effort deterrent, not foolproof) ----
-  document.addEventListener('copy', function(e){ e.preventDefault(); });
-  document.addEventListener('cut', function(e){ e.preventDefault(); });
-  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  document.addEventListener('selectstart', function(e){
-    if (e.target.tagName !== 'A') e.preventDefault();
-  });
-  document.addEventListener('dragstart', function(e){ e.preventDefault(); });
-  document.addEventListener('keydown', function(e){
-    var k = e.key ? e.key.toLowerCase() : '';
-    if ((e.ctrlKey || e.metaKey) && ['c','x','a','s','p','u'].indexOf(k) !== -1) {
-      e.preventDefault();
-    }
-    if (e.key === 'F12') e.preventDefault();
-  });
-</script>
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<!-- Static app data (converted from Malad_Balmandal_Data.xlsx) — embedded so the site works with no server -->
+<script src="data.js"></script>
+<script src="script.js"></script>
+<script>document.getElementById("footYear").textContent = new Date().getFullYear();</script>
 </body>
 </html>
