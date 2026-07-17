@@ -125,6 +125,11 @@
   }
 
   function buildIndexes() {
+    IDX.sabhaById.clear();
+    IDX.karyakarById.clear();
+    IDX.karyakarIdsBySabha.clear();
+    IDX.sabhaIdsByKaryakar.clear();
+    IDX.balaksBySabha.clear();
     DATA.sabha.forEach(function (s) { IDX.sabhaById.set(s.id, s); });
     DATA.karyakar.forEach(function (k) { IDX.karyakarById.set(k.id, k); });
     DATA.mapping.forEach(function (m) {
@@ -138,6 +143,68 @@
       if (!IDX.balaksBySabha.has(b.sabha_id)) IDX.balaksBySabha.set(b.sabha_id, []);
       IDX.balaksBySabha.get(b.sabha_id).push(b);
     });
+  }
+
+  /* ------------------------------------------------------------ */
+  /* LOCAL EDITS (Add / Edit Balak)                                  */
+  /* This is a static, backend-free site — there is no server or      */
+  /* database to write to. New / edited Balak records are therefore   */
+  /* saved in this browser's localStorage only, layered on top of     */
+  /* the original data embedded in data.js. They will not appear on   */
+  /* other devices or browsers unless exported/shared manually.        */
+  /* ------------------------------------------------------------ */
+  const LOCAL_EDITS_KEY = "balmandal_balak_local_edits_v1";
+
+  function loadLocalEdits() {
+    try {
+      const raw = localStorage.getItem(LOCAL_EDITS_KEY);
+      if (!raw) return { edited: {}, added: [] };
+      const parsed = JSON.parse(raw);
+      return { edited: parsed.edited || {}, added: parsed.added || [] };
+    } catch (e) { return { edited: {}, added: [] }; }
+  }
+  function saveLocalEdits(obj) {
+    try { localStorage.setItem(LOCAL_EDITS_KEY, JSON.stringify(obj)); } catch (e) { showToast("Could not save locally — storage unavailable", "error"); }
+  }
+  function applyLocalEditsToBalak() {
+    const local = loadLocalEdits();
+    const base = (window.APP_DATA.balak || []).map(function (b) {
+      return local.edited[b.id] ? Object.assign({}, b, local.edited[b.id]) : b;
+    });
+    DATA.balak = base.concat(local.added);
+  }
+  function nextLocalBalakId() {
+    const allIds = DATA.balak.map(function (b) { return b.id; });
+    return (allIds.length ? Math.max.apply(null, allIds) : 0) + 1;
+  }
+  function upsertLocalBalak(record, isNew) {
+    const local = loadLocalEdits();
+    if (isNew) {
+      local.added.push(record);
+    } else {
+      const wasAdded = local.added.some(function (b) { return b.id === record.id; });
+      if (wasAdded) {
+        local.added = local.added.map(function (b) { return b.id === record.id ? record : b; });
+      } else {
+        local.edited[record.id] = record;
+      }
+    }
+    saveLocalEdits(local);
+    applyLocalEditsToBalak();
+    buildIndexes();
+  }
+  function deleteLocalBalak(id) {
+    const local = loadLocalEdits();
+    local.added = local.added.filter(function (b) { return b.id !== id; });
+    // if it was an originally-embedded record, mark it removed via a tombstone flag
+    local.edited[id] = Object.assign({}, local.edited[id], { _deleted: true });
+    saveLocalEdits(local);
+    const local2 = loadLocalEdits();
+    const base = (window.APP_DATA.balak || []).filter(function (b) { return !(local2.edited[b.id] && local2.edited[b.id]._deleted); });
+    DATA.balak = base.map(function (b) {
+      return local2.edited[b.id] ? Object.assign({}, b, local2.edited[b.id]) : b;
+    }).concat(local2.added);
+    buildIndexes();
   }
 
   /* ------------------------------------------------------------ */
@@ -193,7 +260,7 @@
   /* ------------------------------------------------------------ */
   /* HOME                                                           */
   /* ------------------------------------------------------------ */
-  function renderHome() {
+ function renderHome() {
     $("#homeTotalSabha").textContent = DATA.sabha.filter(function (s) { return s.is_active; }).length;
     $("#homeTotalKaryakar").textContent = DATA.karyakar.filter(function (s) { return s.is_active; }).length;
     $("#homeTotalBalak").textContent = DATA.balak.length;
@@ -279,8 +346,8 @@
   /* ------------------------------------------------------------ */
   function populateSabhaFilters() {
     fillSelect("#sabhaFilterDay", DATA.master.Day || uniq(DATA.sabha, "day"));
-     fillSelect("#sabhaFilterArea", uniq(DATA.sabha, "area")); 
-     fillSelect("#sabhaFilterKshetra", DATA.master.Kshetra || uniq(DATA.sabha, "kshetra"));  
+    fillSelect("#sabhaFilterArea", uniq(DATA.sabha, "area"));
+    fillSelect("#sabhaFilterKshetra", DATA.master.Kshetra || uniq(DATA.sabha, "kshetra"));
     fillSelect("#sabhaFilterType", DATA.master.SabhaType || uniq(DATA.sabha, "sabha_type"));
   }
   function uniq(list, key) {
@@ -305,6 +372,7 @@
     const sortBy = $("#sabhaSort").value;
 
     let list = DATA.sabha.filter(function (s) {
+      if (!s.is_active) return false;
       if (day && s.day !== day) return false;
       if (area && s.area !== area) return false;
       if (kshetra && s.kshetra !== kshetra) return false;
@@ -344,7 +412,7 @@
             '<div><div class="ec-name">' + highlight(s.name, res.term) + '</div>' +
             '<div class="ec-sub">' + esc(s.reg_no) + "</div></div>" +
             '<div class="ec-badges">' +
-              '<span class="ec-badge ' + (s.is_active ? "green" : "grey") + '">' + (s.is_active ? "Active" : "Inactive") + "</span>" +
+              '<span class="ec-badge purple">' + esc(s.reg_no) + "</span>" +
               '<span class="ec-badge orange">' + esc(s.sabha_type) + "</span>" +
             "</div>" +
           "</div>" +
@@ -418,7 +486,7 @@
     html += '<h4>Assigned Karyakar (' + karyakarList.length + ')</h4>';
     html += karyakarList.length
       ? karyakarList.map(function (k) {
-          return '<div class="mini-person"><div><div class="mp-name">' + esc(k.name) + '</div><div class="mp-sub">' + esc(k.work_profile || k.education || "") + '</div></div>' + contactChip(k.contact1, k.name) + "</div>";
+          return '<div class="mini-person"><div><div class="mp-name">' + esc(k.name) + '</div><div class="mp-sub">' + esc(k.dob || "") + '</div></div>' + contactChip(k.contact1, k.name) + "</div>";
         }).join("")
       : '<p class="mp-sub">No karyakar assigned yet.</p>';
 
@@ -455,26 +523,49 @@
   /* ------------------------------------------------------------ */
   function getKaryakarFiltered() {
     const term = ($("#karyakarSearch").value || "").trim().toLowerCase();
-    const area = $("#karyakarFilterArea").value;
-    const active = $("#karyakarFilterActive").value;
-
+    const dob = $("#karyakarFilterdob").value;
+       
     let list = DATA.karyakar.filter(function (k) {
-      if (area && k.area !== area) return false;
-      if (active === "active" && !k.is_active) return false;
-      if (active === "inactive" && k.is_active) return false;
-      if (term) {
-        const hay = [k.name, k.contact1, k.area, k.email, k.company].join(" ").toLowerCase();
+      if (!k.is_active) return false;
+      // if (dob && k.dob !== dob) return false;
+      
+      // DOB Month Filter
+   
+       if (dob) {
+         const month = k.dob ? k.dob.trim().split(/\s+/)[1] : "";
+         if (month !== dob) return false;
+       }
+
+     if (term) {
+        const hay = [k.name, k.contact1, k.area, k.email, k.dob, k.company].join(" ").toLowerCase();
         if (hay.indexOf(term) === -1) return false;
       }
+ 
+
+
       return true;
     });
     list.sort(function (a, b) { return a.name.localeCompare(b.name); });
     return { list: list, term: term };
   }
 
+ // function populateKaryakarFilters() {
+ //   fillSelect("#karyakarFilterdob", uniq(DATA.karyakar, "dob"));
+ // }
+
   function populateKaryakarFilters() {
-    fillSelect("#karyakarFilterArea", uniq(DATA.karyakar, "area"));
-  }
+  const monthOrder = [
+    "Jan","Feb","Mar","Apr","May","Jun",
+    "Jul","Aug","Sep","Oct","Nov","Dec"
+  ];
+   const months = [...new Set(
+    DATA.karyakar
+      .map(k => k.dob?.trim().split(/\s+/)[1])
+      .filter(Boolean)
+  )].sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
+
+  fillSelect("#karyakarFilterdob", months);
+}
 
   function renderKaryakarList() {
     const grid = $("#karyakarGrid");
@@ -494,13 +585,14 @@
           '<div class="ec-head">' +
             '<div><div class="ec-name">' + highlight(k.name, res.term) + '</div>' +
             '<div class="ec-sub">Reg: ' + esc(k.reg_no || "-") + "</div></div>" +
-            '<div class="ec-badges"><span class="ec-badge ' + (k.is_active ? "green" : "grey") + '">' + (k.is_active ? "Active" : "Inactive") + "</span></div>" +
+            '<div class="ec-badges"><span class="ec-badge purple">' + esc(k.reg_no || "-") + "</span></div>" +
           "</div>" +
           '<div class="ec-body">' +
             row("place", "Area", esc(k.area)) +
             (k.education ? row("school", "Education", esc(k.education)) : "") +
             (k.company ? row("apartment", "Company", esc(k.company)) : "") +
-            (k.work_profile ? row("work", "Work Profile", esc(k.work_profile)) : "") +
+            (k.dob ? row("calendar_month", "Dob", esc(k.dob)) : "") +
+            (k.work_profile ? row("work", "Work_profile", esc(k.work_profile)) : "") + 
             (k.address ? row("home_pin", "Address", esc(k.address)) : "") +
             (sabhaNames.length ? row("temple_hindu", "Assigned Sabha", sabhaNames.map(function (n, i) {
               return '<a href="#" data-action="view-sabha" data-id="' + sabhaIds[i] + '">' + esc(n) + "</a>";
@@ -523,14 +615,23 @@
     const sabhaId = $("#balakFilterSabha").value;
     const std = $("#balakFilterStd").value;
     const registered = $("#balakFilterRegistered").value;
-
+    const dob = $("#balakFilterdob").value;
+  
+      
     let list = DATA.balak.filter(function (b) {
       if (sabhaId && String(b.sabha_id) !== sabhaId) return false;
       if (std && b.current_std !== std) return false;
       if (registered === "yes" && !b.registered) return false;
       if (registered === "no" && b.registered) return false;
+
+       // DOB Month Filter
+      if (dob) {
+         const month = b.dob ? b.dob.trim().split(/\s+/)[1] : "";
+         if (month !== dob) return false;
+       }
+
       if (term) {
-        const hay = [b.full_name, b.name, b.father_name, b.school].join(" ").toLowerCase();
+        const hay = [b.full_name, b.name, b.father_name, b.dob, b.school].join(" ").toLowerCase();
         if (hay.indexOf(term) === -1) return false;
       }
       return true;
@@ -542,12 +643,28 @@
   function populateBalakFilters() {
     const sel = $("#balakFilterSabha");
     const current = sel.value;
+    const monthOrder = [
+      "Jan","Feb","Mar","Apr","May","Jun",
+      "Jul","Aug","Sep","Oct","Nov","Dec"
+    ];
+    const months = [...new Set(
+      DATA.balak
+        .map(b=> b.dob?.trim().split(/\s+/)[1])
+        .filter(Boolean)
+    )].sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
+
+
     sel.innerHTML = '<option value="">All Sabha</option>' + DATA.sabha.slice().sort(function (a, b) { return a.name.localeCompare(b.name); }).map(function (s) {
       return '<option value="' + s.id + '">' + esc(s.name) + "</option>";
     }).join("");
     sel.value = current || "";
     fillSelect("#balakFilterStd", uniq(DATA.balak, "current_std"));
+         
+    fillSelect("#balakFilterdob", months);
+      
   }
+
+  
 
   function renderBalakList() {
     const grid = $("#balakGrid");
@@ -576,6 +693,12 @@
             (b.registered ? '<span class="ec-badge green">Registered</span>' : "") + "</div>" +
           "</div>" +
           '<div class="ec-body">' +
+            (b.dob ? row("calendar_month", "dob", esc(b.dob)) : "") +
+            (b.puja_kare_che ? row("book", "Puja Kare Che?", esc(b.puja_kare_che)) : "") +
+            (b.svp ? row("book", "SVP", esc(b.svp)) : "") +
+            (b.satsangi_category ? row("book", "Satsangi Category", esc(b.satsangi_category)) : "") +
+            (b.bal_prakash ? row("book", "Bal Prakash", esc(b.bal_prakash)) : "") +
+                      
             (b.school ? row("school", "School", esc(b.school)) : "") +
             (sabha ? row("temple_hindu", "Sabha", '<a href="#" data-action="view-sabha" data-id="' + sabha.id + '">' + esc(sabha.name) + "</a>") : "") +
             (b.address ? row("home_pin", "Address", esc(b.address)) : "") +
@@ -603,7 +726,7 @@
     const order = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const wrap = $("#dayWiseWrap");
     wrap.innerHTML = order.map(function (day, i) {
-      const items = DATA.sabha.filter(function (s) { return s.day === day; });
+      const items = DATA.sabha.filter(function (s) { return s.day === day && s.is_active; });
       if (!items.length) return "";
       return (
         '<div class="day-accordion-item' + (i === 0 ? " open" : "") + '">' +
@@ -618,7 +741,7 @@
               return (
                 '<div class="entity-card">' +
                   '<div class="ec-head"><div><div class="ec-name">' + esc(s.name) + '</div><div class="ec-sub">' + esc(s.area) + "</div></div>" +
-                  '<span class="ec-badge orange">' + esc(s.sabha_type) + "</span></div>" +
+                  '<div class="ec-badges"><span class="ec-badge purple">' + esc(s.reg_no) + '</span><span class="ec-badge orange">' + esc(s.sabha_type) + "</span></div></div>" +
                   '<div class="ec-body">' +
                     row("schedule", "Time", esc(s.from_to_time || s.time)) +
                     row("home_pin", "Address", esc(s.address)) +
@@ -719,22 +842,22 @@
     });
 
     // karyakar filters
-    ["#karyakarSearch", "#karyakarFilterArea", "#karyakarFilterActive"].forEach(function (sel) {
+    ["#karyakarSearch", "#karyakarFilterdob"].forEach(function (sel) {
       $(sel).addEventListener("input", debounce(renderKaryakarList, 150));
       $(sel).addEventListener("change", renderKaryakarList);
     });
     $("#karyakarClearBtn").addEventListener("click", function () {
-      $("#karyakarSearch").value = ""; $("#karyakarFilterArea").value = ""; $("#karyakarFilterActive").value = "";
+      $("#karyakarSearch").value = ""; $("#karyakarFilterdob").value = "";
       renderKaryakarList();
     });
 
     // balak filters
-    ["#balakSearch", "#balakFilterSabha", "#balakFilterStd", "#balakFilterRegistered"].forEach(function (sel) {
+    ["#balakSearch", "#balakFilterSabha", "#balakFilterStd", "#balakFilterRegistered","#balakFilterdob"].forEach(function (sel) {
       $(sel).addEventListener("input", debounce(function () { STATE.balakPage = 1; renderBalakList(); }, 150));
       $(sel).addEventListener("change", function () { STATE.balakPage = 1; renderBalakList(); });
     });
     $("#balakClearBtn").addEventListener("click", function () {
-      $("#balakSearch").value = ""; $("#balakFilterSabha").value = ""; $("#balakFilterStd").value = ""; $("#balakFilterRegistered").value = "";
+      $("#balakSearch").value = ""; $("#balakFilterSabha").value = ""; $("#balakFilterStd").value = ""; $("#balakFilterRegistered").value = ""; $("#balakFilterdob").value = "";
       STATE.balakPage = 1;
       renderBalakList();
     });
@@ -770,9 +893,9 @@
       }
       else if (action === "copy") { e.preventDefault(); copyToClipboard(t.getAttribute("data-value"), "Number"); }
       else if (action === "copy-map") { copyToClipboard(t.getAttribute("data-value"), "Map link"); }
-      else if (action === "print-sabha") {
-    alert("Printing is disabled.\n\nPlease contact the System Administrator.");
-}
+      else if (action === "print-sabha") 
+         { e.preventDefault();  shareSabha(t.getAttribute("data-id")); }
+        // { alert("Printing is disabled.\n\nPlease contact the System Administrator.");}
       else if (action === "toggle-day") { t.closest(".day-accordion-item").classList.toggle("open"); }
       else if (action === "balak-prev") { STATE.balakPage = Math.max(1, STATE.balakPage - 1); renderBalakList(); scrollToBalakTop(); }
       else if (action === "balak-next") { STATE.balakPage += 1; renderBalakList(); scrollToBalakTop(); }
@@ -785,6 +908,82 @@
     const el = $("#sec-balak");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+
+    /* ------------------------------------------------------------ */
+  /* Share sabha details                                                     */
+  /* ------------------------------------------------------------ */
+
+  function shareSabha(id) {
+    const sabha = DATA.sabha.find(x => x.id == id);
+    if (!sabha) return;
+
+    const karyakarCount =
+        IDX.karyakarIdsBySabha.get(id)?.length || 0;
+
+    const balakCount =
+        IDX.balaksBySabha.get(id)?.length || 0;
+
+    const text =
+`🙏 *Malad East Bal Mandal*
+
+🏠 *${sabha.name}*
+📋 ${sabha.reg_no}
+
+📅 *Day:* ${sabha.day}
+🕢 *Time:* ${sabha.from_to_time}
+
+📍 *Area:* ${sabha.area} (${sabha.kshetra})
+
+👤 *Owner:*
+${sabha.owner_name}
+
+🏡 *Address:*
+${sabha.address}
+
+👥 *Karyakar:* ${karyakarCount}
+👦 *Balak:* ${balakCount}
+
+📞 Contact:
+${sabha.contact1}
+
+📍 Google Map:
+${sabha.google_link}
+
+🙏 Jay Swaminarayan`;
+
+    
+    if (navigator.share) {
+    navigator.share({
+        title: sabha.name,
+        text: text
+    });
+   } else {
+    window.open(
+        "https://wa.me/?text=" + encodeURIComponent(text),
+        "_blank"
+    );
+   }
+
+}
+
+  /* ------------------------------------------------------------ */
+  /* Password                                                     */
+  /* ------------------------------------------------------------ */
+  const PASSWORD = "400097"; // Change this
+
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const input = document.getElementById("loginPasswordInput").value;
+    const error = document.getElementById("loginError");
+
+    if (input === PASSWORD) {
+        document.getElementById("loginOverlay").style.display = "none";
+    } else {
+        error.style.display = "block";
+        document.getElementById("loginPasswordInput").value = "";
+    }
+});
 
   /* ------------------------------------------------------------ */
   /* INIT                                                           */
@@ -814,7 +1013,8 @@
 
   document.addEventListener("DOMContentLoaded", init);
 
-   // ---- Copy / selection restriction (best-effort deterrent, not foolproof) ----
+
+    // Start ---- Copy / selection restriction (best-effort deterrent, not foolproof) ----
   document.addEventListener('copy', function(e){ e.preventDefault(); });
   document.addEventListener('cut', function(e){ e.preventDefault(); });
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
@@ -829,5 +1029,8 @@
     }
     if (e.key === 'F12') e.preventDefault();
       });
+  // End ---- Copy / selection restriction (best-effort deterrent, not foolproof) ----
+
+
 
 })();

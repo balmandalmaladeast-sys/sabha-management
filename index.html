@@ -15,8 +15,23 @@
 </head>
 <body oncontextmenu="return false;">
 
+<!-- ================= LOGIN OVERLAY ================= -->
+<div id="loginOverlay" style="position:fixed;inset:0;background:linear-gradient(160deg,#6a2c91 0%, #9b3fb0 45%, #e0762f 100%);z-index:2100;display:flex;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.35);padding:34px 28px;max-width:340px;width:100%;text-align:center;">
+    <div style="width:60px;height:60px;border-radius:50%;background:#f3e9f7;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 14px auto;">🏯</div>
+    <h3 style="color:#6a2c91;font-weight:800;margin:0 0 4px 0;">Malad East Bal Mandal</h3>
+    <p style="color:#8a7391;font-size:12.5px;margin:0 0 18px 0;">Enter access password to continue</p>
+    <form id="loginForm">
+      <input type="password" id="loginPasswordInput" placeholder="Password" autocomplete="off"
+        style="width:100%;border:1px solid #e2d5ea;border-radius:10px;padding:11px 14px;font-size:14px;text-align:center;letter-spacing:2px;">
+      <p id="loginError" style="color:#c0392b;font-size:12px;margin:8px 0 0 0;display:none;">Incorrect password. Please try again.</p>
+      <button type="submit" style="width:100%;margin-top:14px;background:#6a2c91;color:#fff;border:none;border-radius:10px;padding:11px;font-weight:700;font-size:13.5px;">Enter</button>
+    </form>
+  </div>
+</div>
+
 <!-- ================= LOADING OVERLAY ================= -->
-<div id="loadingOverlay" style="position:fixed;inset:0;background:#f7f5fa;z-index:2000;display:flex;align-items:center;justify-content:center;">
+<div id="loadingOverlay" style="position:fixed;inset:0;background:#f7f5fa;z-index:2000;display:none;align-items:center;justify-content:center;">
   <div class="loading-spinner-wrap">
     <div class="spinner-ring"></div>
     <p style="margin-top:14px;font-weight:600;color:#6a2c91;">Loading Bal Mandal data&hellip;</p>
@@ -42,6 +57,7 @@
   </div>
   <div class="topbar-actions">
     <button id="themeToggleBtn" aria-label="Toggle dark mode"><span class="material-symbols-outlined">dark_mode</span></button>
+    <button id="logoutBtn" aria-label="Logout" title="Logout"><span class="material-symbols-outlined">logout</span></button>
   </div>
 </header>
 
@@ -122,14 +138,14 @@
   <!-- ---------------- SABHA ---------------- -->
   <section class="page-section" id="sec-sabha">
     <div class="section-heading">
-      <div><h2><span class="material-symbols-outlined">temple_hindu</span>Sabha Directory</h2><p class="sub">Browse, search and filter all registered Sabha</p></div>
+      <div><h2><span class="material-symbols-outlined">temple_hindu</span>Sabha Directory</h2><p class="sub">Browse, search and filter all active Sabha</p></div>
     </div>
     <div class="container-narrow">
       <div class="filter-bar">
         <div class="search-input"><span class="material-symbols-outlined">search</span><input type="text" id="sabhaSearch" placeholder="Search by name, area, address..."></div>
         <select id="sabhaFilterDay"><option value="">All Days</option></select>
         <select id="sabhaFilterArea"><option value="">All Areas</option></select>
-        <select id="sabhaFilterKshetra"><option value="">All Kshetra</option></select> 
+        <select id="sabhaFilterKshetra"><option value="">All Kshetra</option></select>
         <select id="sabhaFilterType"><option value="">All Types</option></select>
         <select id="sabhaSort">
           <option value="">Sort: Default</option>
@@ -152,12 +168,7 @@
     <div class="container-narrow">
       <div class="filter-bar">
         <div class="search-input"><span class="material-symbols-outlined">search</span><input type="text" id="karyakarSearch" placeholder="Search by name, contact, company..."></div>
-        <select id="karyakarFilterArea"><option value="">All Areas</option></select>
-        <select id="karyakarFilterActive">
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
+        <select id="karyakarFilterdob"><option value="">All Month</option></select>
         <button class="clear-btn" id="karyakarClearBtn"><span class="material-symbols-outlined" style="font-size:16px;">close</span>Clear</button>
         <span class="result-count" id="karyakarResultCount"></span>
       </div>
@@ -169,6 +180,7 @@
   <section class="page-section" id="sec-balak">
     <div class="section-heading">
       <div><h2><span class="material-symbols-outlined">child_care</span>Balak Directory</h2><p class="sub">Search Balak records — tap the phone or WhatsApp icon to reach a parent instantly</p></div>
+      <button class="ec-btn primary" id="addBalakBtn" style="flex:none;"><span class="material-symbols-outlined">add</span>Add New Balak</button>
     </div>
     <div class="container-narrow">
       <div class="filter-bar">
@@ -179,6 +191,9 @@
           <option value="">All</option>
           <option value="yes">Registered</option>
           <option value="no">Not Registered</option>
+        </select>
+        <select id="balakFilterdob">
+          <option value="">All Month</option> 
         </select>
         <button class="clear-btn" id="balakClearBtn"><span class="material-symbols-outlined" style="font-size:16px;">close</span>Clear</button>
         <span class="result-count" id="balakResultCount"></span>
@@ -250,16 +265,55 @@
   </div>
 </div>
 
+<!-- ================= BALAK ADD / EDIT MODAL ================= -->
+<div class="detail-modal-backdrop" id="balakFormModal">
+  <div class="detail-modal-content" style="max-width:600px;">
+    <div class="dm-head">
+      <div><h3 id="balakFormTitle">Add New Balak</h3><div class="dm-sub">Saved on this device only (no server / database)</div></div>
+      <button id="balakFormCloseBtn"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="dm-body">
+      <form id="balakForm">
+        <input type="hidden" id="bfId">
+        <div class="form-grid-2">
+          <div class="form-field"><label>Name *</label><input type="text" id="bfName" required></div>
+          <div class="form-field"><label>Father's Name</label><input type="text" id="bfFatherName"></div>
+          <div class="form-field"><label>Surname</label><input type="text" id="bfSurname"></div>
+          <div class="form-field"><label>Current Standard</label><input type="text" id="bfStd" placeholder="e.g. 5, JrKG"></div>
+          <div class="form-field"><label>Contact Number (Home)</label><input type="tel" id="bfContactHome" placeholder="10-digit mobile"></div>
+          <div class="form-field"><label>Alternate Number (Father)</label><input type="tel" id="bfContactFather" placeholder="10-digit mobile"></div>
+          <div class="form-field"><label>School Name</label><input type="text" id="bfSchool"></div>
+          <div class="form-field"><label>Sabha</label><select id="bfSabha"><option value="">— Select Sabha —</option></select></div>
+          <div class="form-field"><label>Satsangi Category</label><select id="bfSatsangiCategory"><option value="">— Select —</option></select></div>
+          <div class="form-field" style="display:flex;align-items:center;gap:8px;margin-top:22px;">
+            <input type="checkbox" id="bfRegistered" style="width:16px;height:16px;">
+            <label style="margin:0;" for="bfRegistered">Registered</label>
+          </div>
+          <div class="form-field full"><label>Address</label><textarea id="bfAddress" rows="2"></textarea></div>
+          <div class="form-field full"><label>Remarks</label><textarea id="bfRemarks" rows="2"></textarea></div>
+        </div>
+      </form>
+    </div>
+    <div class="dm-actions">
+      <button class="ec-btn primary" type="submit" form="balakForm"><span class="material-symbols-outlined">save</span>Save Balak</button>
+      <button class="ec-btn outline" type="button" id="balakFormCancelBtn"><span class="material-symbols-outlined">close</span>Cancel</button>
+      <button class="ec-btn outline" type="button" id="balakFormDeleteBtn" style="display:none;color:#c0392b;"><span class="material-symbols-outlined">delete</span>Delete</button>
+    </div>
+  </div>
+</div>
+
 <!-- ================= FLOATING BUTTONS ================= -->
 <button class="fab fab-top" id="fabTop" aria-label="Back to top"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
- 
+<!-- <a class="fab fab-wa" href="https://wa.me/919820512210" target="_blank" rel="noopener" aria-label="WhatsApp Bal Mandal"><span class="material-symbols-outlined">chat</span></a> -->
+
+
 <!-- ================= TOASTS ================= -->
 <div class="toast-stack" id="toastStack"></div>
 
 <!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <!-- Static app data (converted from Malad_Balmandal_Data.xlsx) — embedded so the site works with no server -->
-<script src="data.js"></script>
+<script src="ref/lata.js"></script>
 <script src="script.js"></script>
 <script>document.getElementById("footYear").textContent = new Date().getFullYear();</script>
 </body>
