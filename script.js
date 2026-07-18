@@ -124,24 +124,32 @@
     });
   }
 
+  // IDs come from the source data with inconsistent types (some sabha/karyakar
+  // ids are strings, some balak.sabha_id / mapping values are numbers). Every
+  // index below is keyed by String(id) so lookups never fail due to a
+  // "1" !== 1 type mismatch. Always look these maps up via idKey(...).
+  function idKey(v) { return v == null ? "" : String(v); }
+
   function buildIndexes() {
     IDX.sabhaById.clear();
     IDX.karyakarById.clear();
     IDX.karyakarIdsBySabha.clear();
     IDX.sabhaIdsByKaryakar.clear();
     IDX.balaksBySabha.clear();
-    DATA.sabha.forEach(function (s) { IDX.sabhaById.set(s.id, s); });
-    DATA.karyakar.forEach(function (k) { IDX.karyakarById.set(k.id, k); });
+    DATA.sabha.forEach(function (s) { IDX.sabhaById.set(idKey(s.id), s); });
+    DATA.karyakar.forEach(function (k) { IDX.karyakarById.set(idKey(k.id), k); });
     DATA.mapping.forEach(function (m) {
-      if (!IDX.karyakarIdsBySabha.has(m.sabha_id)) IDX.karyakarIdsBySabha.set(m.sabha_id, []);
-      IDX.karyakarIdsBySabha.get(m.sabha_id).push(m.karyakar_id);
-      if (!IDX.sabhaIdsByKaryakar.has(m.karyakar_id)) IDX.sabhaIdsByKaryakar.set(m.karyakar_id, []);
-      IDX.sabhaIdsByKaryakar.get(m.karyakar_id).push(m.sabha_id);
+      const sId = idKey(m.sabha_id), kId = idKey(m.karyakar_id);
+      if (!IDX.karyakarIdsBySabha.has(sId)) IDX.karyakarIdsBySabha.set(sId, []);
+      IDX.karyakarIdsBySabha.get(sId).push(kId);
+      if (!IDX.sabhaIdsByKaryakar.has(kId)) IDX.sabhaIdsByKaryakar.set(kId, []);
+      IDX.sabhaIdsByKaryakar.get(kId).push(sId);
     });
     DATA.balak.forEach(function (b) {
-      if (b.sabha_id == null) return;
-      if (!IDX.balaksBySabha.has(b.sabha_id)) IDX.balaksBySabha.set(b.sabha_id, []);
-      IDX.balaksBySabha.get(b.sabha_id).push(b);
+      if (b.sabha_id == null || b.sabha_id === "") return;
+      const sId = idKey(b.sabha_id);
+      if (!IDX.balaksBySabha.has(sId)) IDX.balaksBySabha.set(sId, []);
+      IDX.balaksBySabha.get(sId).push(b);
     });
   }
 
@@ -404,8 +412,8 @@
     }
 
     grid.innerHTML = res.list.map(function (s) {
-      const karyakarCount = (IDX.karyakarIdsBySabha.get(s.id) || []).length;
-      const balakCount = (IDX.balaksBySabha.get(s.id) || []).length;
+      const karyakarCount = (IDX.karyakarIdsBySabha.get(idKey(s.id)) || []).length;
+      const balakCount = (IDX.balaksBySabha.get(idKey(s.id)) || []).length;
       return (
         '<div class="entity-card" id="sabha-card-' + s.id + '">' +
           '<div class="ec-head">' +
@@ -454,11 +462,11 @@
   /* SABHA DETAIL MODAL                                             */
   /* ------------------------------------------------------------ */
   function openSabhaModal(id) {
-    const s = IDX.sabhaById.get(Number(id));
+    const s = IDX.sabhaById.get(idKey(id));
     if (!s) return;
-    const karyakarIds = IDX.karyakarIdsBySabha.get(s.id) || [];
-    const karyakarList = karyakarIds.map(function (kid) { return IDX.karyakarById.get(kid); }).filter(Boolean);
-    const balakList = IDX.balaksBySabha.get(s.id) || [];
+    const karyakarIds = IDX.karyakarIdsBySabha.get(idKey(s.id)) || [];
+    const karyakarList = karyakarIds.map(function (kid) { return IDX.karyakarById.get(idKey(kid)); }).filter(Boolean);
+    const balakList = IDX.balaksBySabha.get(idKey(s.id)) || [];
 
     $("#dmTitle").textContent = s.name;
     $("#dmSub").textContent = s.reg_no + " \u00b7 " + s.area;
@@ -578,8 +586,8 @@
     }
 
     grid.innerHTML = res.list.map(function (k) {
-      const sabhaIds = IDX.sabhaIdsByKaryakar.get(k.id) || [];
-      const sabhaNames = sabhaIds.map(function (sid) { const s = IDX.sabhaById.get(sid); return s ? s.name : null; }).filter(Boolean);
+      const sabhaIds = IDX.sabhaIdsByKaryakar.get(idKey(k.id)) || [];
+      const sabhaNames = sabhaIds.map(function (sid) { const s = IDX.sabhaById.get(idKey(sid)); return s ? s.name : null; }).filter(Boolean);
       return (
         '<div class="entity-card">' +
           '<div class="ec-head">' +
@@ -683,7 +691,7 @@
     const pageItems = res.list.slice(startIdx, startIdx + STATE.balakPageSize);
 
     grid.innerHTML = pageItems.map(function (b) {
-      const sabha = b.sabha_id != null ? IDX.sabhaById.get(b.sabha_id) : null;
+      const sabha = b.sabha_id != null ? IDX.sabhaById.get(idKey(b.sabha_id)) : null;
       return (
         '<div class="entity-card">' +
           '<div class="ec-head">' +
@@ -736,8 +744,8 @@
           "</div>" +
           '<div class="day-accordion-body"><div class="cards-grid">' +
             items.map(function (s) {
-              const karyakarCount = (IDX.karyakarIdsBySabha.get(s.id) || []).length;
-              const balakCount = (IDX.balaksBySabha.get(s.id) || []).length;
+              const karyakarCount = (IDX.karyakarIdsBySabha.get(idKey(s.id)) || []).length;
+              const balakCount = (IDX.balaksBySabha.get(idKey(s.id)) || []).length;
               return (
                 '<div class="entity-card">' +
                   '<div class="ec-head"><div><div class="ec-name">' + esc(s.name) + '</div><div class="ec-sub">' + esc(s.area) + "</div></div>" +
@@ -881,7 +889,7 @@
       if (action === "view-sabha") { e.preventDefault(); openSabhaModal(t.getAttribute("data-id")); }
       else if (action === "goto-sabha") { openSabhaModal(t.getAttribute("data-id")); $("#globalSearchResults").classList.remove("show"); $("#globalSearchInput").value = ""; }
       else if (action === "goto-karyakar") {
-        goto("karyakar"); $("#karyakarSearch").value = IDX.karyakarById.get(Number(t.getAttribute("data-id"))).name;
+        goto("karyakar"); $("#karyakarSearch").value = IDX.karyakarById.get(idKey(t.getAttribute("data-id"))).name;
         renderKaryakarList(); $("#globalSearchResults").classList.remove("show"); $("#globalSearchInput").value = "";
       }
       else if (action === "goto-balak") {
@@ -914,14 +922,14 @@
   /* ------------------------------------------------------------ */
 
   function shareSabha(id) {
-    const sabha = DATA.sabha.find(x => x.id == id);
+    const sabha = IDX.sabhaById.get(idKey(id));
     if (!sabha) return;
 
     const karyakarCount =
-        IDX.karyakarIdsBySabha.get(id)?.length || 0;
+        IDX.karyakarIdsBySabha.get(idKey(id))?.length || 0;
 
     const balakCount =
-        IDX.balaksBySabha.get(id)?.length || 0;
+        IDX.balaksBySabha.get(idKey(id))?.length || 0;
 
     const text =
 `🙏 *Malad East Bal Mandal*

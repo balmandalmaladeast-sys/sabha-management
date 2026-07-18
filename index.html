@@ -6,6 +6,18 @@
 <title>Malad East Bal Mandal — Sabha Information Management System</title>
 <meta name="description" content="Sabha, Karyakar and Balak directory management system for Malad East Bal Mandal.">
 
+<!-- ============== PWA: installable app on desktop & mobile ============== -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6a2c91">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<!-- iOS "Add to Home Screen" support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bal Mandal">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<!-- ========================================================================= -->
+
 <!-- Bootstrap 5 -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
 <!-- Material Symbols -->
@@ -56,6 +68,7 @@
     <div class="global-search-results" id="globalSearchResults"></div>
   </div>
   <div class="topbar-actions">
+    <button id="installAppBtn" aria-label="Install app" title="Install app" style="display:none;"><span class="material-symbols-outlined">install_desktop</span></button>
     <button id="themeToggleBtn" aria-label="Toggle dark mode"><span class="material-symbols-outlined">dark_mode</span></button>
     <button id="logoutBtn" aria-label="Logout" title="Logout"><span class="material-symbols-outlined">logout</span></button>
   </div>
@@ -316,5 +329,62 @@
 <script src="ref/lata.js"></script>
 <script src="script.js"></script>
 <script>document.getElementById("footYear").textContent = new Date().getFullYear();</script>
+
+<!-- ============== PWA: service worker registration + install prompt ============== -->
+<script>
+(function () {
+  // Register service worker (enables offline use + is required by browsers
+  // before they will offer an "Install app" prompt).
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function (err) {
+        console.warn("Service worker registration failed:", err);
+      });
+    });
+  }
+
+  // Capture Chrome/Edge's install prompt and show our own button instead of
+  // the default mini-infobar, so users on desktop and Android can install
+  // the app with one tap.
+  var deferredPrompt = null;
+  var installBtn = document.getElementById("installAppBtn");
+
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) installBtn.style.display = "flex";
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener("click", function () {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.finally(function () {
+        deferredPrompt = null;
+        installBtn.style.display = "none";
+      });
+    });
+  }
+
+  window.addEventListener("appinstalled", function () {
+    if (installBtn) installBtn.style.display = "none";
+    deferredPrompt = null;
+  });
+
+  // Deep-link support for manifest shortcuts (e.g. index.html#sabha) and for
+  // opening the installed app directly to a section.
+  window.addEventListener("load", function () {
+    var hash = (location.hash || "").replace("#", "");
+    var valid = ["home", "summary", "sabha", "karyakar", "balak", "daywise", "contact"];
+    if (hash && valid.indexOf(hash) !== -1) {
+      var tryGoto = setInterval(function () {
+        var link = document.querySelector('[data-goto="' + hash + '"]');
+        if (link) { clearInterval(tryGoto); link.click(); }
+      }, 100);
+      setTimeout(function () { clearInterval(tryGoto); }, 3000);
+    }
+  });
+})();
+</script>
 </body>
 </html>
